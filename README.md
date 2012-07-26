@@ -1,0 +1,2 @@
+scalaquery-magic
+================
