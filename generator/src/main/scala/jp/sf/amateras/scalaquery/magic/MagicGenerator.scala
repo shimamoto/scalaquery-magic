@@ -7,6 +7,14 @@ import jp.sf.amateras.scalagen._
  * It's possible to generate Table objects and case classes.
  */
 class MagicGenerator extends GeneratorBase {
+  
+  /**
+   * Adds TIMESTAMP -> "java.util.Date" to type mappings.
+   */
+  override def settings(settings: Settings): Settings = {
+    settings.copy(typeMappings = DataTypes.defaultMappings + (java.sql.Types.TIMESTAMP -> "java.util.Date"))
+  }
+
   def generate(settings: Settings, table: Table): String = {
     import settings._
 
@@ -49,13 +57,9 @@ class MagicGenerator extends GeneratorBase {
     "  def PKValue = " + mkString(table.columns.withFilter(_.primaryKey).map { _.propertyName }){ list => list.mkString("(", ", ", ")") } + "\n" +
     "}\n"
   }
-
+  
   private def propertyType(column: Column) = {
-    val scalaType = column.scalaType match {
-      case "java.sql.Timestamp" => "java.util.Date"	// custom type with TypeMapper
-      case x => x
-    }
-    if(column.nullable) "Option[" + scalaType + "]" else scalaType
+    if(column.nullable) "Option[" + column.dataType + "]" else column.dataType
   }
 
   private val mkString = (list: List[_]) => (f: List[_] => String) =>
