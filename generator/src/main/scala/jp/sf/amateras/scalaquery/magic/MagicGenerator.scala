@@ -21,9 +21,11 @@ class MagicGenerator extends GeneratorBase {
     val extendedColumn = (method: String) => (filter: Column => Boolean) =>
       "  def " + method + " = " +
       {table.columns.withFilter{ filter }.map { _.propertyName } match {
+        case List() => "throw new UnsupportedOperationException\n\n"
         case List(n) => "new SingleMappedProjection(" + n + ", apply_" + method + " _, unapply_" + method + " _)\n"
         case x => x.mkString(" ~ ") + " <> (apply_" + method + " _, unapply_" + method + " _)\n"
       }} +
+      {if(table.columns.filter { filter }.isEmpty) "" else
       "  private def apply_" + method + "(" + table.columns.withFilter{ filter }.map { column => column.propertyName + ": " + propertyType(column) }.mkString(",") + "): " + table.className + " =\n" +
       "    " + table.className + "(" + table.columns.collect {
         case column if !filter(column) => propertyType(column) match {	// default value at primary key
@@ -34,6 +36,7 @@ class MagicGenerator extends GeneratorBase {
       }.mkString(",")  + ")\n" +
       "  private def unapply_" + method + "(o: " + table.className + "): Option[(" + table.columns.withFilter{ filter }.map { propertyType _ }.mkString(",") + ")] =\n" +
       "    Some(" + table.columns.withFilter{ filter }.map { "o." + _.propertyName }.mkString(",")  + ")\n\n"
+      }
 
     // generate code
     {if(packageName == "") "" else "package " + packageName + "\n\n"} +
