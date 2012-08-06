@@ -24,5 +24,9 @@ object TypeMapper {
   }
 
   implicit object GetJavaDate extends GetResult[Date] { def apply(rs: PositionedResult) = new Date(rs.nextTimestamp().getTime) }
+  implicit object GetJavaDateOption extends GetResult[Option[Date]] { def apply(rs: PositionedResult) = rs.nextTimestampOption() match {
+    case Some(t) => Some(new Date(t.getTime))
+    case None => None
+  }}
 
 }
