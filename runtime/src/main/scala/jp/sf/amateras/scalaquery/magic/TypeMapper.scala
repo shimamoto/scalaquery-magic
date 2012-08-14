@@ -18,7 +18,7 @@ object TypeMapper {
     def sqlType = java.sql.Types.TIMESTAMP
     def setValue(v: Date, p: PositionedParameters) = p.setTimestamp(new java.sql.Timestamp(v.getTime))
     def setOption(v: Option[Date], p: PositionedParameters) = p.setTimestampOption(v.map(d => new java.sql.Timestamp(d.getTime)))
-    def nextValue(r: PositionedResult) = new Date(r.nextTimestamp().getTime)
+    def nextValue(r: PositionedResult) = { val v = r.nextTimestamp(); if(r.rs wasNull) zero else new Date(v.getTime) }
     def updateValue(v: Date, r: PositionedResult) = r.updateTimestamp(new java.sql.Timestamp(v.getTime))
     override def valueToSQLLiteral(value: Date) = "{date '"+value.toString+"'}"
   }
