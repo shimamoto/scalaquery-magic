@@ -20,7 +20,7 @@ import scala.annotation.tailrec
  * @since   1.0
  * @tparam R the result type of statement invocation
  */
-trait MagicDao[R <: GenericEntity] {
+trait MagicDao[R <: GenericEntity] extends ColumnOps {
   val table: ExtendedTable[R]
 
   /**
