@@ -15,9 +15,8 @@ object ApplicationBuild extends Build {
   lazy val generator = Project("scalaquery-magic-generator", file("generator"))
       .settings(commonSettings ++ Seq(
           resolvers ++= Seq(
-            "amateras snapshot" at "http://amateras.sourceforge.jp/mvn-snapshot/",
             "amateras repository" at "http://amateras.sourceforge.jp/mvn/"),
-          libraryDependencies += "jp.sf.amateras.scalagen" %% "scalagen-core" % "0.1"): _*)
+          libraryDependencies += "jp.sf.amateras.scalagen" %% "scalagen-core" % "0.2"): _*)
 
   def commonSettings = Defaults.defaultSettings ++
     Seq(
