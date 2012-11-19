@@ -20,7 +20,7 @@ object ApplicationBuild extends Build {
 
   def commonSettings = Defaults.defaultSettings ++
     Seq(
-      version := "0.1-SNAPSHOT",
+      version := "0.1",
       scalaVersion := "2.9.1",
       organization := "jp.sf.amateras.scalaquery-magic",
       publishTo <<= (version) { version: String =>
